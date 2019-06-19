@@ -1,11 +1,20 @@
-const convert = require('./node_modules/xml-js');
+var xml2js = require('./node_modules/xml2js');
 
 exports.handler = async (event) => {
-    var xml  = event['body-json'];
-    var json = convert.xml2json(xml, {compact: true, spaces: 4});
+    const xml  = event['body-json'];
+    const json = xml2js.parseString(
+      xml,
+      {
+        mergeAttrs: true,
+        explicitArray: false
+      }, function (err, result) {
+        return JSON.stringify(result);
+    });
+
     const response = {
         statusCode: 200,
         json: json,
     };
+
     return response;
 };
