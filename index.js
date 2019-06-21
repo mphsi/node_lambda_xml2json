@@ -1,6 +1,15 @@
 var xml2js = require('./node_modules/xml2js');
 
-function valueAsNumber(value){
+const fieldsToSkip = [
+  'NoCertificadoSAT',
+  'Impuesto',
+];
+
+function valueAsNumber(value, name){
+  if (fieldsToSkip.includes(name)) {
+    return value;
+  }
+  
   let typ = typeof value
   if (typ === 'number' || (typ === 'string' && value.toUpperCase().indexOf('E') !== -1)) {
     return value;
@@ -20,7 +29,6 @@ exports.handler = async (event) => {
       {
         mergeAttrs: true,
         explicitArray: false,
-        // valueProcessors: [valueAsNumber]
         attrValueProcessors: [valueAsNumber]
       }, function (err, result) {
         json = JSON.stringify(result);
